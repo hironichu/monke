@@ -1,21 +1,23 @@
 import {
   contentType,
   parseMediaType,
-} from "https://deno.land/std@0.181.0/media_types/mod.ts";
+} from "https://deno.land/std@0.217.0/media_types/mod.ts";
 
-import {
-  createCanvas,
-  loadImage,
-} from "https://deno.land/x/canvas@v1.4.1/mod.ts";
+
+import { createCanvas, Image as CanvasImage } from "https://deno.land/x/skia_canvas@0.5.5/mod.ts";
+
 import { Image } from "./structures/image.ts";
 
 export async function getPixels(path: string) {
   const data = /https?:\/\/.+/.test(path)
     ? await getImageFromWeb(path)
     : await getImageFromLocal(path);
-  const image = await loadImage(data.data);
+  
+  const image = new CanvasImage(data.data);
+    
+  // const image = await loadImage(data.data);
 
-  const canvas = createCanvas(image.width(), image.height());
+  const canvas = createCanvas(image.width, image.height);
 
   const ctx = canvas.getContext("2d");
 
